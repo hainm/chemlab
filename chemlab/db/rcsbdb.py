@@ -3,13 +3,8 @@ from io import BytesIO
 from .base import AbstractDB, EntryNotFound
 
 
-# Python 2-3 compatibility
-try:
-    from urllib.parse import quote_plus
-    from urllib.request import urlopen
-except ImportError:
-    from urllib.parse import quote_plus
-    from urllib.request import urlopen
+from urllib.parse import quote_plus
+from urllib.request import urlopen
 
 
 class RcsbDB(AbstractDB):
