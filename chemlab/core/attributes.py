@@ -1,4 +1,5 @@
 import numpy as np
+from six import string_types
 
 class EntityProperty(object):
     '''Main base class for ChemicalEntity property specification'''
@@ -8,7 +9,7 @@ class Attribute(EntityProperty):
     def __init__(self, shape=None, dtype=None, dim=None, alias=None):
         '''An array of values that belong to the current ChemicalEntity.'''
         
-        if not isinstance(dim, basestring):
+        if not isinstance(dim, string_types):
             raise ValueError('dim parameter is required and should be a string.')
         
         self.shape = shape
@@ -23,9 +24,9 @@ class Relation(EntityProperty):
     def __init__(self, map=None, dim=None, alias=None, shape=None):
         '''An array of values that connects items belonging to the same dimension'''
         
-        if not isinstance(dim, basestring):
+        if not isinstance(dim, string_types):
             raise ValueError('dim parameter is required and should be a string.')
-        if not isinstance(map, basestring):
+        if not isinstance(map, string_types):
             raise ValueError('map parameter is required and should be a string.')
         
         self.map=map
@@ -134,7 +135,7 @@ class InstanceArray(InstanceProperty):
 class InstanceAttribute(InstanceArray):
     
     def __init__(self, name, shape=None, dtype=None, dim=None, alias=None):
-        if not isinstance(dim, basestring):
+        if not isinstance(dim, string_types):
             raise ValueError('dim parameter is required and should be a string.')
         self.name = name
         self.shape = shape
@@ -184,13 +185,13 @@ class InstanceAttribute(InstanceArray):
 class InstanceRelation(InstanceArray):
     
     def __init__(self, name, map=None, index=None, dim=None, shape=None, alias=None):
-        if not isinstance(dim, basestring):
+        if not isinstance(dim, string_types):
             raise ValueError('dim parameter is required and should be a string.')
 
-        if not isinstance(map, basestring):
+        if not isinstance(map, string_types):
             raise ValueError('map parameter is required and should be a string.')
         
-        if not isinstance(name, basestring):
+        if not isinstance(name, string_types):
             raise ValueError('name parameter should be a string')
 
         if not isinstance(index, (list, np.ndarray)):
@@ -266,7 +267,7 @@ class InstanceRelation(InstanceArray):
         else:
             obj = self.copy()
         
-        newindex = range(len(obj.index))
+        newindex = list(range(len(obj.index)))
         obj.remap(obj.index, newindex)
         obj.index = newindex
         return obj

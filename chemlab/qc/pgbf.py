@@ -14,6 +14,7 @@
 """
 
 import numpy as np
+from functools import reduce
 
 def fact2(n):
     """
@@ -29,7 +30,7 @@ def fact2(n):
     >>> fact2(-1)
     1
     """
-    return reduce(int.__mul__,range(n,0,-2),1)
+    return reduce(int.__mul__,list(range(n,0,-2)),1)
 
 def norm2(a): return np.dot(a,a)
 

@@ -66,7 +66,7 @@ class Cylinder(Shape):
         self.vertices.append(np.array([self.radius, 0.0, length]))
         
         self.vertices = np.array(self.vertices)
-        self.indices = xrange(len(self.vertices.flatten()))
+        self.indices = range(len(self.vertices.flatten()))
 
         # Normals, this is quite easy they are the coordinate with
         # null z
@@ -89,7 +89,7 @@ class Cylinder(Shape):
         n = self.cloves * 2 + 2
         # Draw each triangle in order to form the cylinder
         a0 = np.array([0,1,2, 2,1,3]) # first two triangles
-        a = np.concatenate([a0 + 2*i for i in xrange(self.cloves)])
+        a = np.concatenate([a0 + 2*i for i in range(self.cloves)])
         self.indices = a
         n = self.cloves * 2 * 3
         self.tri_vertex = self.vertices[a].flatten()

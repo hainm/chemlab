@@ -1,7 +1,7 @@
 """Ipython integration
 
 """
-from __future__ import absolute_import
+
 from io import BytesIO
 from chemlab.graphics.renderers import AtomRenderer, BoxRenderer, BallAndStickRenderer
 from chemlab.graphics.qtviewer import QtViewer

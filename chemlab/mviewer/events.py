@@ -23,16 +23,14 @@ class BoundEvent(object):
         
 class EventMeta(type):
     def __init__(cls, name, bases, dct):
-        for k,v in dct.items():
+        for k,v in list(dct.items()):
             if isinstance(v, Event):
                 # Give the event a name
                 v.name = k
         
         super(EventMeta, cls).__init__(name, bases, dct)
 
-class Model(object):
-    __metaclass__ = EventMeta
-    
+class Model(object, metaclass=EventMeta):
     def __init__(self):
         self._callbacks = {}
 

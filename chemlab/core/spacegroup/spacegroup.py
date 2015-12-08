@@ -119,7 +119,7 @@ class Spacegroup(object):
             will be used.
         """
         if isinstance(spacegroup, Spacegroup):
-            for k, v in spacegroup.__dict__.iteritems():
+            for k, v in spacegroup.__dict__.items():
                 setattr(self, k, v)
             return 
         if not datafile:
@@ -706,7 +706,7 @@ if __name__ == '__main__':
 
     # Import spacegroup in order to ensure that __file__ is defined
     # such that the data base can be found.
-    import spacegroup
+    from . import spacegroup
 
     import doctest
-    print('doctest: ', doctest.testmod())
+    print(('doctest: ', doctest.testmod()))

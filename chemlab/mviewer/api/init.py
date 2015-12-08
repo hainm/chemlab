@@ -16,5 +16,5 @@ sys.path.insert(0, CHEMPATH)
 if os.path.exists(os.path.join(CHEMPATH, 'scripts', '__init__.py')):
     from scripts import *
 else:
-    print('Create the {} file to put initialization code'.
-          format(os.path.join(CHEMPATH,'scripts', '__init__.py')))
+    print(('Create the {} file to put initialization code'.
+          format(os.path.join(CHEMPATH,'scripts', '__init__.py'))))

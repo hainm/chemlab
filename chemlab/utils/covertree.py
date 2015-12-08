@@ -204,7 +204,7 @@ class CoverTree(object):
         if len(points) == 0:
             return np.array([]), np.array([])
         
-        return zip(*[self.query_ball(p, r) for p, r in zip(points, radii)])
+        return list(zip(*[self.query_ball(p, r) for p, r in zip(points, radii)]))
     
     def visit(self, node, level, callback):
         callback(node, level)

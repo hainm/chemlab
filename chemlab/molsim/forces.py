@@ -22,8 +22,8 @@ def lennard_jones(coords, type, periodic=False):
     n = len(coords)
     forces = np.zeros_like(coords)
     # Inefficient, no fancy indexing
-    for i in xrange(n):
-        for j in xrange(i+1, n):
+    for i in range(n):
+        for j in range(i+1, n):
             d = coords[j] - coords[i]
             if periodic:
                 comp_far = np.absolute(d) > periodic*0.5 

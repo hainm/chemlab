@@ -38,8 +38,8 @@ def setup_textures():
         # We put the pixel data in an awesome, encompassing string of
         # 0,1
         expanded_data = ""
-        for j in xrange(height):
-            for k in xrange(width):
+        for j in range(height):
+            for k in range(width):
                 if (k >= glyph_width) or (j >= glyph_height):
                     value = chr(0)
                     expanded_data += value

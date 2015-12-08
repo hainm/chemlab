@@ -24,19 +24,19 @@ class ChemicalEntity(object):
         instance = super(ChemicalEntity, cls).__new__(cls)
         # We create the actual attributes, relations and fields.
         instance.__attributes__ = {name : attr.create(name) 
-                                   for name, attr in cls.__attributes__.items()} 
-        instance.__relations__ = {name : attr.create(name, index=range(1)) 
-                                   for name, attr in cls.__relations__.items()}
+                                   for name, attr in list(cls.__attributes__.items())} 
+        instance.__relations__ = {name : attr.create(name, index=list(range(1))) 
+                                   for name, attr in list(cls.__relations__.items())}
         instance.__fields__ = {name: attr.create(name) 
-                                   for name, attr in cls.__fields__.items()}
+                                   for name, attr in list(cls.__fields__.items())}
         
         # Dimensions get initialized at 0
-        instance.dimensions = { attr.dim: 0 for attr in merge_dicts(instance.__attributes__, 
-                                                                    instance.__relations__).values()}
+        instance.dimensions = { attr.dim: 0 for attr in list(merge_dicts(instance.__attributes__, 
+                                                                    instance.__relations__).values())}
         # No subentity information at the beginning
         instance.maps = {}
         
-        for val in merge_dicts(cls.__attributes__, cls.__relations__).values():
+        for val in list(merge_dicts(cls.__attributes__, cls.__relations__).values()):
             instance.dimensions[val.dim] = 0
             
         return instance
@@ -67,7 +67,7 @@ class ChemicalEntity(object):
                                 self.__fields__,
                                 self.__relations__)
         if alias:
-            prop_dict.update({v.alias : v for v in prop_dict.values() if v.alias is not None})
+            prop_dict.update({v.alias : v for v in list(prop_dict.values()) if v.alias is not None})
         
         return prop_dict[name]
     
@@ -92,8 +92,8 @@ class ChemicalEntity(object):
         """
         
         ret = merge_dicts(self.__attributes__, self.__relations__, self.__fields__)
-        ret = {k : v.value for k,v in ret.items()}
-        ret['maps'] = {k : v.value for k,v in self.maps.items()}
+        ret = {k : v.value for k,v in list(ret.items())}
+        ret['maps'] = {k : v.value for k,v in list(self.maps.items())}
         return ret 
 
     @classmethod
@@ -116,10 +116,10 @@ class ChemicalEntity(object):
         inst = super(type(self), type(self)).empty(**self.dimensions)
         
         # Need to copy all attributes, fields, relations
-        inst.__attributes__ = {k: v.copy() for k, v in self.__attributes__.items()}
-        inst.__fields__ = {k: v.copy() for k, v in self.__fields__.items()}
-        inst.__relations__ = {k: v.copy() for k, v in self.__relations__.items()}
-        inst.maps = {k: m.copy() for k, m in self.maps.items()}
+        inst.__attributes__ = {k: v.copy() for k, v in list(self.__attributes__.items())}
+        inst.__fields__ = {k: v.copy() for k, v in list(self.__fields__.items())}
+        inst.__relations__ = {k: v.copy() for k, v in list(self.__relations__.items())}
+        inst.maps = {k: m.copy() for k, m in list(self.maps.items())}
         inst.dimensions = self.dimensions.copy()
         
         return inst
@@ -129,16 +129,16 @@ class ChemicalEntity(object):
         
         """
         # Need to copy all attributes, fields, relations
-        self.__attributes__ = {k: v.copy() for k, v in other.__attributes__.items()}
-        self.__fields__ = {k: v.copy() for k, v in other.__fields__.items()}
-        self.__relations__ = {k: v.copy() for k, v in other.__relations__.items()}
-        self.maps = {k: m.copy() for k, m in other.maps.items()}
+        self.__attributes__ = {k: v.copy() for k, v in list(other.__attributes__.items())}
+        self.__fields__ = {k: v.copy() for k, v in list(other.__fields__.items())}
+        self.__relations__ = {k: v.copy() for k, v in list(other.__relations__.items())}
+        self.maps = {k: m.copy() for k, m in list(other.maps.items())}
         self.dimensions = other.dimensions.copy()
     
     def update(self, dictionary):
         """Update the current chemical entity from a dictionary of attributes"""
-        allowed_attrs = self.__attributes__.keys()
-        allowed_attrs += [a.alias for a in self.__attributes__.values()]
+        allowed_attrs = list(self.__attributes__.keys())
+        allowed_attrs += [a.alias for a in list(self.__attributes__.values())]
         for k in dictionary:
             # We only update existing attributes
             if k in allowed_attrs:
@@ -147,26 +147,26 @@ class ChemicalEntity(object):
     def initialize_empty(self, **kwargs):
         self.dimensions.update(kwargs)
         
-        for attr in self.__attributes__.values():
+        for attr in list(self.__attributes__.values()):
             attr.empty(self.dimensions[attr.dim])
             
-        for rel in self.__relations__.values():
+        for rel in list(self.__relations__.values()):
             ixdim = self.dimensions[rel.map]
-            rel.index = range(ixdim)
+            rel.index = list(range(ixdim))
             rel.empty(self.dimensions[rel.dim])
             
-        for field in self.__fields__.values():
+        for field in list(self.__fields__.values()):
             field.empty()
 
     def reorder(self, **kwargs):
-        for attr in self.__attributes__.values():
+        for attr in list(self.__attributes__.values()):
             order = kwargs.get(attr.dim, None)
             if order is not None:
                 attr.reorder(order, inplace=True)
         
-        for attr in self.__relations__.values():
+        for attr in list(self.__relations__.values()):
             from_map = {column: kwargs.get(column, None) for column in attr.columns}
-            to_map = {column: range(self.dimensions[column]) for column in attr.columns}
+            to_map = {column: list(range(self.dimensions[column])) for column in attr.columns}
             attr.remap(from_map, to_map, inplace=True)
 
     def _from_entities(self, entities, newdim):
@@ -183,7 +183,7 @@ class ChemicalEntity(object):
                 # Make the sub-attribute structure
                 subattr_map = InstanceRelation('map', map=newdim, 
                                                 dim=dim, 
-                                                index=range(self.dimensions[newdim]))
+                                                index=list(range(self.dimensions[newdim])))
                 subattr_map.value = np.concatenate([[i] * e.dimensions[dim] for i, e in enumerate(entities)])
                 
                 # TODO: redundant
@@ -191,10 +191,10 @@ class ChemicalEntity(object):
                 
                 self.dimensions[dim] = sum(e.dimensions[dim] for e in entities)
         
-        for name, attr in self.__attributes__.items():
+        for name, attr in list(self.__attributes__.items()):
             
             # Copy only existing fields or attributes
-            if attr.name not in tpl.__fields__.keys() + tpl.__attributes__.keys():
+            if attr.name not in list(tpl.__fields__.keys()) + list(tpl.__attributes__.keys()):
                 continue
             
             # Concatenate fields in new, independent, attributes
@@ -207,20 +207,20 @@ class ChemicalEntity(object):
                 self.__attributes__[name] = concatenate_attributes(child_attr)
 
         # Concatenate relations as well
-        for name, attr in self.__relations__.items():
+        for name, attr in list(self.__relations__.items()):
             if newdim in attr.map:
-                self.__relations__[name].index = range(self.dimensions[newdim])
+                self.__relations__[name].index = list(range(self.dimensions[newdim]))
             else:
                 child_rel = [e.get_attribute(attr.name) for e in entities]
                 self.__relations__[name] = concatenate_relations(child_rel)
 
     @classmethod
     def _attr_by_dimension(cls, dim):
-        return [name for name, attr in merge_dicts(cls.__attributes__, cls.__relations__).items() if attr.dim == dim]
+        return [name for name, attr in list(merge_dicts(cls.__attributes__, cls.__relations__).items()) if attr.dim == dim]
     
     @classmethod
     def _dimensions(cls):
-        return set(attr.dim for attr in merge_dicts(cls.__attributes__, cls.__relations__).values())
+        return set(attr.dim for attr in list(merge_dicts(cls.__attributes__, cls.__relations__).values()))
 
     @classmethod
     def from_arrays(cls, **kwargs):
@@ -254,7 +254,7 @@ class ChemicalEntity(object):
             obj.maps[a, b] = InstanceRelation('map', 
                                               map=b, 
                                               dim=a,
-                                              index=range(obj.dimensions[b]))
+                                              index=list(range(obj.dimensions[b])))
             obj.maps[a, b].value = maps[a, b]
         
         # Initialize attributes
@@ -263,7 +263,7 @@ class ChemicalEntity(object):
             if isinstance(attr, (InstanceAttribute, InstanceField)):
                 attr.value = kwargs[k]
             elif isinstance(attr, InstanceRelation):
-                attr.index = range(obj.dimensions[attr.map])
+                attr.index = list(range(obj.dimensions[attr.map]))
                 attr.value = kwargs[k]
         
         return obj
@@ -293,11 +293,11 @@ class ChemicalEntity(object):
                 # That get appended and transformed
                 self.maps[dim, newdim].append(additional_map)
                 
-        for name, attr in self.__attributes__.items():
+        for name, attr in list(self.__attributes__.items()):
             # This takes care of attributes and fields
             attr.append(entity.get_attribute(name))
         
-        for name, rel in self.__relations__.items():
+        for name, rel in list(self.__relations__.items()):
             rel.append(entity.get_attribute(name))
     
         
@@ -311,7 +311,7 @@ class ChemicalEntity(object):
                              .format(index, dim, self.dimensions[dim]))
         
         
-        for name, attr in self.__attributes__.items():
+        for name, attr in list(self.__attributes__.items()):
             if attr.dim == dim:
                 # If the dimension of the attributes is the same of the
                 # dimension of the entity, we generate a field
@@ -325,7 +325,7 @@ class ChemicalEntity(object):
                 entity.__attributes__[name] = attr.sub(mapped_index)
                 entity.dimensions[attr.dim] = np.count_nonzero(mapped_index)
 
-        for name, rel in self.__relations__.items():
+        for name, rel in list(self.__relations__.items()):
             if rel.map == dim:
                 # The relation is between entities we need to return
                 # which means the entity doesn't know about that
@@ -341,7 +341,7 @@ class ChemicalEntity(object):
                 # We need to remap values
                 convert_index = self.maps[rel.map, dim].value == index
                 entity.__relations__[name].remap(convert_index.nonzero()[0],
-                                                 range(entity.dimensions[rel.map]))
+                                                 list(range(entity.dimensions[rel.map])))
         
         return entity
 
@@ -357,12 +357,12 @@ class ChemicalEntity(object):
         result[dimension] &= set(index)
         
         # Propagate for relations
-        for rel in self.__relations__.values():            
+        for rel in list(self.__relations__.values()):            
             if rel.map == dimension:
                 result[rel.dim] &= set(rel.argfilter(index))
         
         # Propagate for the attribute maps
-        for (a, b), rel in self.maps.items():
+        for (a, b), rel in list(self.maps.items()):
             # This is where the attribute propagation happens
             if not propagate: continue
             
@@ -377,7 +377,7 @@ class ChemicalEntity(object):
                 result[rel.dim] &= set(rel.argfilter(index))
 
 
-        return {k: np.array(sorted(v), 'int') for k, v in result.items()}
+        return {k: np.array(sorted(v), 'int') for k, v in list(result.items())}
     
     def subindex(self, filter_, inplace=False):
         if not inplace:
@@ -385,17 +385,17 @@ class ChemicalEntity(object):
         else:
             inst = self
         
-        inst.dimensions = {k: len(normalize_index(f)) for k, f in filter_.items()}
+        inst.dimensions = {k: len(normalize_index(f)) for k, f in list(filter_.items())}
         
-        for name, attr in inst.__attributes__.items():
+        for name, attr in list(inst.__attributes__.items()):
             inst.__attributes__[name] = attr.sub(filter_[attr.dim])
 
-        for name, rel in inst.__relations__.items():
+        for name, rel in list(inst.__relations__.items()):
             inst.__relations__[name] = rel.sub(filter_[rel.dim])
             inst.__relations__[name].index = rel.index[filter_[rel.map]]
             inst.__relations__[name].reindex()
 
-        for (a, b), rel in inst.maps.items():
+        for (a, b), rel in list(inst.maps.items()):
             inst.maps[a, b] = rel.sub(filter_[a])
             inst.maps[a, b].index = rel.index[filter_[b]]
             inst.maps[a, b].reindex()
@@ -412,7 +412,7 @@ class ChemicalEntity(object):
         return self.subindex(filter_, inplace)
     
     def shrink_dimension(self, newdim, dimension):
-        return self.sub_dimension(range(newdim),
+        return self.sub_dimension(list(range(newdim)),
                                   dimension, 
                                   propagate=False,
                                   inplace=True)
@@ -421,13 +421,13 @@ class ChemicalEntity(object):
         ''' When we expand we need to provide new maps and relations as those
         can't be inferred '''
         
-        for name, attr in self.__attributes__.items():
+        for name, attr in list(self.__attributes__.items()):
             if attr.dim == dimension:
                 newattr = attr.copy()
                 newattr.empty(newdim - attr.size)
                 self.__attributes__[name] = concatenate_attributes([attr, newattr])
 
-        for name, rel in self.__relations__.items():
+        for name, rel in list(self.__relations__.items()):
             if dimension == rel.dim:
                 # We need the new relation from the user
                 if not rel.name in relations:
@@ -440,9 +440,9 @@ class ChemicalEntity(object):
             
             elif dimension == rel.map:
                 # Extend the index
-                rel.index = range(newdim)
+                rel.index = list(range(newdim))
                 
-        for (a, b), rel in self.maps.items():
+        for (a, b), rel in list(self.maps.items()):
             if dimension == rel.dim:
                 # We need the new relation from the user
                 if not (a, b) in maps:
@@ -455,7 +455,7 @@ class ChemicalEntity(object):
             
             elif dimension == rel.map:
                 # Extend the index
-                rel.index = range(newdim)
+                rel.index = list(range(newdim))
         
         # Update dimensions
         self.dimensions[dimension] = newdim
@@ -467,35 +467,35 @@ class ChemicalEntity(object):
             raise ValueError('order must contain all distinct elements in dimension %s' % dimension)
         order = np.asarray(order)
         # Initialize
-        result = { k: range(v) for k, v in self.dimensions.items() }
+        result = { k: list(range(v)) for k, v in list(self.dimensions.items()) }
         
         # The actual dimension gets reordered normally
         result[dimension] = order
         
         # Propagate for attribute maps
-        for (a, b), rel in self.maps.items():
+        for (a, b), rel in list(self.maps.items()):
             if rel.map == dimension:
                 rel_new = rel.remap(order, rel.index, inplace=False)
                 # We can't use quicksort because it is not a stable sort
                 result[a] = np.argsort(rel_new.value, kind='mergesort')
         
-        return {k: np.array(v, dtype='int') for k,v in result.items()}
+        return {k: np.array(v, dtype='int') for k,v in list(result.items())}
 
         
     def reorder_dimension(self, order, dimension):
         reorder = self._propagate_reorder(order, dimension)
         
         # Attributes get reordered normally
-        for name, attr in self.__attributes__.items():
+        for name, attr in list(self.__attributes__.items()):
             attr.reorder(reorder[attr.dim])
         
         # Relations get reordered and remapped
-        for name, rel in self.__relations__.items():
+        for name, rel in list(self.__relations__.items()):
             rel.reorder(reorder[rel.dim])
             rel.remap(reorder[rel.map], rel.index)
         
         # Maps get reordered too
-        for name, rel in self.maps.items():
+        for name, rel in list(self.maps.items()):
             rel.remap(rel.index, reorder[rel.map])
             rel.reorder(reorder[rel.dim])
         
@@ -510,21 +510,21 @@ class ChemicalEntity(object):
             obj = self.copy()
         
         # Stitch every attribute
-        for name, attr in obj.__attributes__.items():
+        for name, attr in list(obj.__attributes__.items()):
             attr.append(other.__attributes__[name])
             
         # Stitch every relation
-        for name, rel in obj.__relations__.items():
+        for name, rel in list(obj.__relations__.items()):
             rel.append(other.__relations__[name])
         
         # Update maps
         
         # Update dimensions
         if obj.is_empty():
-            obj.maps = {k: m.copy() for k, m in other.maps.items()}
+            obj.maps = {k: m.copy() for k, m in list(other.maps.items())}
             obj.dimensions = other.dimensions.copy()
         else:
-            for (a, b), rel in obj.maps.items():
+            for (a, b), rel in list(obj.maps.items()):
                 rel.append(other.maps[a, b])
             for d in obj.dimensions:
                 obj.dimensions[d] += other.dimensions[d]
@@ -570,7 +570,7 @@ def concatenate_relations(relations):
     
     rel = tpl.copy()
     rel.alias = None
-    rel.index = range(sum(len(r.index) for r in relations)) 
+    rel.index = list(range(sum(len(r.index) for r in relations))) 
     
     arrays = []
     iterindex = iter(rel.index)

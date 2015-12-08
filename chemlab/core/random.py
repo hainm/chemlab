@@ -31,7 +31,7 @@ def spaced_lattice(size, spacing):
     z = np.arange(0.0, size[2], spacing[2])[:-1]
     
     g = meshgrid2(x, y, z)
-    positions = np.vstack(map(np.ravel, g)).transpose()
+    positions = np.vstack(list(map(np.ravel, g))).transpose()
     
     return positions
     

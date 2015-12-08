@@ -71,7 +71,7 @@ def test_instance_attribute():
     assert_npequal(iattr1.value, ['H'])
 
 def test_instance_relation():
-    irel = InstanceRelation('bonds', map='atoms', index=range(3), dim='bonds', shape=(2,))
+    irel = InstanceRelation('bonds', map='atoms', index=list(range(3)), dim='bonds', shape=(2,))
     eq_(irel.size, 0)
     assert_npequal(irel.index, [0, 1, 2])
     
@@ -153,7 +153,7 @@ def test_concatenate_attributes():
     
 
 def test_concatenate_relations():
-    a1 = InstanceRelation('bonds', map='atom', index=range(3), shape=(2,), dim='bond')
+    a1 = InstanceRelation('bonds', map='atom', index=list(range(3)), shape=(2,), dim='bond')
     newattr = concatenate_relations([a1, a1, a1])
     eq_(newattr.size, 0)
     

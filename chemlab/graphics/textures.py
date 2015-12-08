@@ -1,6 +1,6 @@
 """Texture data structures
 """
-from __future__ import print_function
+
 from OpenGL.GL import *
 
 class Texture(object):

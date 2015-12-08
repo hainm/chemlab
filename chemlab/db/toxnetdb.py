@@ -6,8 +6,8 @@ try:
     from urllib.parse import quote_plus
     from urllib.request import urlopen
 except ImportError:
-    from urllib import quote_plus
-    from urllib2 import urlopen
+    from urllib.parse import quote_plus
+    from urllib.request import urlopen
 
 import re
 

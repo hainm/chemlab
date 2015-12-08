@@ -132,7 +132,7 @@ class Cylinder(object):
         self.vertices.append(np.array([self.radius, 0.0, length]))
         
         self.vertices = np.array(self.vertices)
-        self.indices = range(len(self.vertices.flatten()))
+        self.indices = list(range(len(self.vertices.flatten())))
         
         # Normals, this is quite easy they are the coordinate with
         # null z

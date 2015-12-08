@@ -34,7 +34,7 @@ def ray_spheres_intersection(origin, direction, centers, radii):
     intersections = intersections[dist_mask].tolist()
 
     if intersections:
-        distances, intersections = zip(*sorted(zip(distances, intersections)))
+        distances, intersections = list(zip(*sorted(zip(distances, intersections))))
         return list(intersections), list(distances)
     else:
         return [], []
@@ -185,7 +185,7 @@ class CylinderPicker(object):
                 distances.append(t)
                 
         if intersections:
-            distances, intersections = zip(*sorted(zip(distances, intersections)))
+            distances, intersections = list(zip(*sorted(zip(distances, intersections))))
             return list(intersections), list(distances)
         else:
             return [], []

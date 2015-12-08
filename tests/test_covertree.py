@@ -102,8 +102,8 @@ def test_find():
         dr = dist - bf
         if dr >= 1e-10:
             real = np.argmin(periodic_distance(p, positions, np.array([10, 10, 10])))
-            print 'CoverTree', dist, ct, 'BruteForce', bf, positions[real
-                                                                     ], real
+            print('CoverTree', dist, ct, 'BruteForce', bf, positions[real
+                                                                     ], real)
 
         assert dr <= 1e-10
 

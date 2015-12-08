@@ -9,7 +9,7 @@ from ..libs import chemspipy
 try:
     import configparser
 except:
-    import ConfigParser as configparser
+    import configparser as configparser
 
 
 class ChemSpiderDB(AbstractDB):

@@ -54,7 +54,7 @@ def test_from_dict():
     s = System([na, na, cl, cl, water, water])
     p = ForceGenerator(spec)
     
-    print to_top(s, p)
+    print(to_top(s, p))
 
 # def test_uff():
 #     # Test a thing with one bond, like H2

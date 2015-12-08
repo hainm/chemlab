@@ -14,9 +14,10 @@ try:
     from urllib.parse import quote as urlquote
     from urllib.error import HTTPError
 except ImportError:
-    from urllib2 import urlopen, HTTPError
-    from urllib2 import quote as urlquote
-    from urllib import urlencode
+    from urllib.request import urlopen
+    from urllib.error import HTTPError
+    from urllib.parse import quote as urlquote
+    from urllib.parse import urlencode
     
 from xml.etree import ElementTree as ET
 

@@ -44,7 +44,7 @@ class InterMolecular(object):
     @classmethod
     def from_dict(cls, data):
         self = cls()
-        for name, atomspec in data.items():
+        for name, atomspec in list(data.items()):
             particle = ChargedLJ(name, atomspec['q'], atomspec['type'], atomspec['sigma'], atomspec['eps'])
             self.particles[name] = particle
         
@@ -102,7 +102,7 @@ class IntraMolecular(object):
     @classmethod
     def from_dict(cls, data):
         self = cls()
-        for name, molspec in data.items():
+        for name, molspec in list(data.items()):
             if 'bonds' in molspec:
                 bonds = [HarmonicConstraint(b['between'], b['r'], b['k']) 
                           for b in molspec['bonds']]
@@ -137,7 +137,7 @@ def to_top(system, potential):
     [unique_molecules.__setitem__(m.molecule_name, m) for m in molecules]
 
     unique_atoms = OrderedDict()
-    for m in unique_molecules.values():
+    for m in list(unique_molecules.values()):
         for a in [m.subentity(Atom, i) for i in range(m.dimensions['atom'])]:
             unique_atoms[a.atom_name] = a
 

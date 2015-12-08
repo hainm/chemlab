@@ -1,7 +1,7 @@
 '''Trajectory analysis utils
 
 '''
-from __future__ import division
+
 import numpy as np
 from chemlab.core.spacegroup.crystal import crystal
 from chemlab.molsim.analysis import rdf, rdf_multi
@@ -17,7 +17,7 @@ class Timer(object):
     def start(self):
         self.t = time.time()
     def stop(self):
-        print("Elapsed", time.time() - self.t)
+        print(("Elapsed", time.time() - self.t))
 
 timer = Timer()
 

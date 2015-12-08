@@ -4,8 +4,8 @@ try:
     from urllib.request import urlopen
     from urllib.parse import urlparse
 except ImportError: # python 2
-    from urllib2 import urlopen
-    from urlparse import urlparse
+    from urllib.request import urlopen
+    from urllib.parse import urlparse
 
 from .handlers.base import make_ionotavailable
 from .handlers import GromacsIO
@@ -54,13 +54,13 @@ def add_default_handler(ioclass, format, extension=None):
 
     """
     if format in _handler_map:
-        print("Warning: format {} already present.".format(format))
+        print(("Warning: format {} already present.".format(format)))
 
     _handler_map[format] = ioclass
 
     if extension in _extensions_map:
-        print("Warning: extension {} already handled by {} handler."
-              .format(extension, _extensions_map[extension]))
+        print(("Warning: extension {} already handled by {} handler."
+              .format(extension, _extensions_map[extension])))
 
     if extension is not None:
         _extensions_map[extension] = format
@@ -94,7 +94,7 @@ def get_handler_class(ext):
         hc = _handler_map[format]
         return hc
     else:
-        matches = difflib.get_close_matches(format, _handler_map.keys())
+        matches = difflib.get_close_matches(format, list(_handler_map.keys()))
         raise ValueError("Unknown Handler for format %s, close matches: %s"
                          % (format, str(matches)))
 

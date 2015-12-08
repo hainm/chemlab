@@ -406,7 +406,7 @@ class Molecule(object):
         
         kwargs = self.todict()
         
-        for k, val in kwargs.items():
+        for k, val in list(kwargs.items()):
             kwargs[k] = copy(val)
             
         return cls.from_arrays(**kwargs)

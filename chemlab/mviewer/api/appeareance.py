@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 from .core import *
 from .selections import *
 from chemlab.graphics import colors

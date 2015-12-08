@@ -47,7 +47,7 @@ class VectorizedMap(object):
     def __init__(self, map, default=None, ignorecase=False):
         
         if ignorecase:
-            self.map = { k.lower(): v for k, v in map.items() }
+            self.map = { k.lower(): v for k, v in list(map.items()) }
         else:
             self.map = map
         

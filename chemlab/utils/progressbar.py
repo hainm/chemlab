@@ -118,5 +118,5 @@ if __name__ == '__main__':
         time.sleep(0.1)
         if p.progress == 100:
             break
-    print #new line
+    print() #new line
 

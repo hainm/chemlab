@@ -1,3 +1,4 @@
+
 import numpy as np
 import operator
 
@@ -5,6 +6,7 @@ from collections import Counter
 from .base import ChemicalEntity, Field, Attribute, Relation, InstanceRelation
 from .serialization import json_to_data, data_to_json
 from ..utils.pbc import periodic_distance
+from functools import reduce
 
 class Atom(ChemicalEntity):
     __dimension__ = 'atom'
@@ -37,7 +39,7 @@ class Atom(ChemicalEntity):
         '''
         obj = cls.__new__(cls)
         
-        for name, field in obj.__fields__.items():
+        for name, field in list(obj.__fields__.items()):
             if name in kwargs:
                 field.value = kwargs[name]
         
@@ -77,9 +79,9 @@ class Molecule(ChemicalEntity):
             if bonds.size < len(value):
                 self.expand_dimension(len(value), 'bond', relations={'bonds': value})
             elif bonds.size > len(value):
-                print self.dimensions, len(value)
+                print((self.dimensions, len(value)))
                 self.shrink_dimension(len(value), 'bond')
-            print self.dimensions
+            print((self.dimensions))
         super(Molecule, self).__setattr__(name, value)
         
     @property
@@ -336,7 +338,7 @@ class System(ChemicalEntity):
     def where(self, molecule_index=None, molecule_name=None, atom_index=None, 
               atom_type=None, within_of=None, inplace=False):
         """Return indices that met the conditions"""
-        masks = {k: np.ones(v, dtype='bool') for k,v in self.dimensions.items()} 
+        masks = {k: np.ones(v, dtype='bool') for k,v in list(self.dimensions.items())} 
         
         def index_to_mask(index, n):
             val = np.zeros(n, dtype='bool')
@@ -433,7 +435,7 @@ class MoleculeGenerator(object):
 
     def __getitem__(self, key):
         if isinstance(key, slice):
-            ind = range(*key.indices(self.system.n_mol))
+            ind = list(range(*key.indices(self.system.n_mol)))
             ret = []
             for i in ind:
                 ret.append(self.system.get_molecule(i))
@@ -450,7 +452,7 @@ class AtomGenerator(object):
 
     def __getitem__(self, key):
         if isinstance(key, slice):
-            ind = range(*key.indices(self.system.n_mol))
+            ind = list(range(*key.indices(self.system.n_mol)))
             ret = []
             for i in ind:
                 ret.append(self.system.get_atom(i))

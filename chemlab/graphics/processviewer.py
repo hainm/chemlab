@@ -4,8 +4,9 @@ from .renderers import AbstractRenderer
 from .viewer import AbstractViewer, Viewer
 import pyglet
 
-from Queue import Empty
+from queue import Empty
 from multiprocessing import Queue, Process
+import imp
 
 g_input = Queue()
 g_output = Queue()
@@ -53,7 +54,7 @@ class ProcessViewer(AbstractViewer):
     def _run(self):
         # Creating the first viewer instance
         opt = pyglet.options
-        reload(pyglet)
+        imp.reload(pyglet)
         pyglet.options = opt
         
         v = Viewer()
@@ -76,7 +77,7 @@ class ProcessViewer(AbstractViewer):
 
                 # Getting the correct handler for the type
                 handler = None
-                for key, value in proxymap.items():
+                for key, value in list(proxymap.items()):
                     if isinstance(res, key):
                         handler = value
                         break

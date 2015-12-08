@@ -70,7 +70,7 @@ def load_remote_molecule(url, format=None):
         load_remote_molecule('https://raw.github.com/chemlab/chemlab-testdata/master/benzene.mol')
     
     '''
-    from urllib import urlretrieve
+    from urllib.request import urlretrieve
     
     filename, headers = urlretrieve(url)
     load_molecule(filename, format=format)
@@ -84,7 +84,7 @@ def load_remote_system(url, format=None):
     
         load_remote_system('https://raw.github.com/chemlab/chemlab-testdata/master/naclwater.gro')
     '''
-    from urllib import urlretrieve
+    from urllib.request import urlretrieve
     
     filename, headers = urlretrieve(url)
     load_system(filename, format=format)
@@ -95,7 +95,7 @@ def load_remote_trajectory(url, format=None):
     .. seealso:: load_remote_system
     
     '''
-    from urllib import urlretrieve
+    from urllib.request import urlretrieve
     filename, headers = urlretrieve(url)
     load_trajectory(filename, format)
 

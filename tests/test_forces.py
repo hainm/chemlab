@@ -1,5 +1,5 @@
 '''Calculate forces between atoms'''
-from __future__ import print_function
+
 from chemlab import Atom, Molecule
 from chemlab.core.system import MonatomicSystem
 from chemlab.molsim.cforces import lennard_jones
@@ -37,7 +37,7 @@ def test_4atoms():
     def update_pos():
         try:
             for i in range(100):
-                sys, t = evo.next()
+                sys, t = next(evo)
             sr.update(sys.r_array)
             
         except StopIteration:
@@ -83,7 +83,7 @@ def test_forces():
     def update_pos():
         try:
             for i in range(100):
-                sys, t = evo.next()
+                sys, t = next(evo)
                 
             dist = np.linalg.norm(sys.r_array[0] - sys.r_array[1])
             pot = cenergy.lennard_jones( sys.r_array * 1e-9, 'Ar', periodic=False)            
@@ -176,7 +176,7 @@ def test_periodic():
     def update_pos():
         try:
             for i in range(100):
-                sys, t = evo.next()
+                sys, t = next(evo)
                 
             dist = np.linalg.norm(sys.r_array[0] - sys.r_array[1])
             pot = cenergy.lennard_jones( sys.r_array * 1e-9, 'Ar', periodic=False)            
